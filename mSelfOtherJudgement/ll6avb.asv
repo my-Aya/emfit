@@ -52,16 +52,16 @@ for t=1:length(a);
 		l = l+l0(a(t)); % combined log lik of current action
 
 		if dodiff
-			dl(1) = dl(1) + dqdr(a(t),wv,av(t)) - p'*dqdr(:,wv,av(t)); % calculate lik gradient for rho, based on current dqdr
-			dl(2) = dl(2) + dqda(a(t),wv,av(t)) - p'*dqda(:,wv,av(t)); % calculate lik gradient for alpha, based on current dqda
+			dl(1) = dl(1) + dqdr(a(t),wv,av(t)) - p'*dqdr(:,wv,av(t));
+			dl(2) = dl(2) + dqda(a(t),wv,av(t)) - p'*dqda(:,wv,av(t));
 			tmp = [wordval(t);0];  
-			dl(2+bl)   = dl(2+bl) + tmp(a(t)) - p'*tmp; % calculate lik gradient for bias, based on p
+			dl(2+bl)   = dl(2+bl) + tmp(a(t)) - p'*tmp;
 
-			dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha*(rho*r(t) - dqdr(a(t),wv,av(t))); % update dqdr
-			dqda(a(t),wv,av(t)) = dqda(a(t),wv,av(t)) + alpha*(1-alpha)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha*(-dqda(a(t),wv,av(t))); % update dqda
+			dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha*(rho*r(t) - dqdr(a(t),wv,av(t)));
+			dqda(a(t),wv,av(t)) = dqda(a(t),wv,av(t)) + alpha*(1-alpha)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha*(-dqda(a(t),wv,av(t)));
 		end
 
-		Q(  a(t),wv,av(t)) = Q(  a(t),wv,av(t))+alpha*( rho*r(t)-Q(  a(t),wv,av(t))); % update Q value
+		Q(  a(t),wv,av(t)) = Q(  a(t),wv,av(t))+alpha*( rho*r(t)-Q(  a(t),wv,av(t)));
 
 	else
 		if options.generatesurrogatedata==1
