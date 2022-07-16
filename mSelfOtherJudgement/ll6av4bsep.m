@@ -1,4 +1,4 @@
-function [l,dl,dsurr] = kk_lld6sepavb(x,D,mu,nui,doprior,options);
+function [l,dl,dsurr] = ll6av4bsep(x,D,mu,nui,doprior,options)
 % 
 % [l,dl,surrugatedata] = llb(x,D,mu,nui,doprior,options);
 % 
@@ -16,7 +16,7 @@ np = size(x,1);
 rho = exp(x(1));
 alpha_pos = 1./(1+exp(-x(2)));
 alpha_neg = 1./(1+exp(-x(3)));
-selfposbias = x(4:5);
+selfposbias = x(4:7);
 
 % add Gaussian prior with mean mu and variance nui^-1 if doprior = 1 
 [l,dl] = logGaussianPrior(x,mu,nui,doprior);
@@ -40,47 +40,43 @@ end
 for t=1:length(a)
 	if ~isnan(a(t))
 
-		bl = 1+(t>48);
+        bl = 1+(t>48);
 		wv = (-wordval(t)+3)/2;
-        pe_type = (r(t) - Q(a(t),wv, av(t))) > 0;
-		q0 = Q(:,wv,av(t)); 
-		q0(1) = q0(1) + selfposbias(bl)*wordval(t);
+		q0 = Q(:,wv,av(t));
+		q0(1) = q0(1) + selfposbias(bl+wordval(t)+1)*wordval(t);
 
 		l0 = q0-max(q0);
 		l0 = l0 - log(sum(exp(l0)));
-		p = exp(l0); 
+		p = exp(l0);
 
-		if options.generatesurrogatedata==1
+        if options.generatesurrogatedata==1
 			[a(t),r(t)] = generatera(p,wordval(t),avatval(t));
-		end
+        end
+        pe_type = (r(t) - Q(a(t),wv,av(t))) > 0;
+
 		l = l+l0(a(t));
 
 		if dodiff
 			dl(1) = dl(1) + dqdr(a(t),wv,av(t)) - p'*dqdr(:,wv,av(t));
-            if pe_type
-			    dl(2) = dl(2) + dqdapos(a(t),wv,av(t)) - p'*dqdapos(:,wv,av(t));
-                dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_pos*(-dqdapos(a(t),wv,av(t)));
-			    dqdapos(3-a(t),wv,av(t)) = dqdapos(3-a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(-rho*r(t)-Q(3-a(t),wv,av(t))) + alpha_pos*(-dqdapos(3-a(t),wv,av(t)));
-                dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
-			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_pos*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
-            else
-                dl(2) = dl(2) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t));
-                dqdaneg(a(t),wv,av(t)) = dqdaneg(a(t),wv,av(t)) + alpha_neg*(1-alpha_neg)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_neg*(-dqdaneg(a(t),wv,av(t)));
-			    dqdaneg(3-a(t),wv,av(t)) = dqdaneg(3-a(t),wv,av(t)) + alpha_neg*(1-alpha_neg)*(-rho*r(t)-Q(3-a(t),wv,av(t))) + alpha_neg*(-dqdaneg(3-a(t),wv,av(t)));
-                dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_neg*(rho*r(t) - dqdr(a(t),wv,av(t)));
-			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_neg*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
-            end
+            dl(2) = dl(2) + dqdapos(a(t),wv,av(t)) - p'*dqdapos(:,wv,av(t));
+            dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t));
             tmp = [wordval(t);0];  
-			dl(2+bl)   = dl(2+bl) + tmp(a(t)) - p'*tmp;
+			dl(4+bl+wordval(t))   = dl(4+bl+wordval(t)) + tmp(a(t)) - p'*tmp;
+            if pe_type
+                dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
+			    dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_pos*(-dqdapos(a(t),wv,av(t)));
+            else
+                dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_neg*(rho*r(t) - dqdr(a(t),wv,av(t)));
+			    dqdaneg(a(t),wv,av(t)) = dqdaneg(a(t),wv,av(t)) + alpha_neg*(1-alpha_neg)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_neg*(-dqdaneg(a(t),wv,av(t)));
+            end
+            
 			
 		end
         
         if pe_type
 		    Q(  a(t),wv,av(t)) = Q(  a(t),wv,av(t))+alpha_pos*( rho*r(t)-Q(  a(t),wv,av(t)));
-		    Q(3-a(t),wv,av(t)) = Q(3-a(t),wv,av(t))+alpha_pos*(-rho*r(t)-Q(3-a(t),wv,av(t)));
         else
             Q(  a(t),wv,av(t)) = Q(  a(t),wv,av(t))+alpha_neg*( rho*r(t)-Q(  a(t),wv,av(t)));
-		    Q(3-a(t),wv,av(t)) = Q(3-a(t),wv,av(t))+alpha_neg*(-rho*r(t)-Q(3-a(t),wv,av(t)));
         end
 
 	else

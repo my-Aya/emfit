@@ -35,71 +35,71 @@ model(i).npar = 2;
 model(i).parnames = {'bias self','bias other'};
 model(i).parnames_untr = {'b_s','b_o'};
 model(i).partransform = {'@(x)x','@(x)x'};
-% 
-% i=i+1;
-% model(i).descr = 'RW model, restart for each avatar and two self/other bias parameters (shared across words). Words are part of state';
-% model(i).name = 'll6avb';
-% model(i).npar = 4;
-% model(i).parnames = {'\rho','\alpha','bias self','bias other'};
-% model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
-% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
-% 
-% i=i+1;
-% model(i).descr = 'RW model with double update (for opposite action, same word), restart for each avatar and two self/other bias parameters (shared across words). Words are part of state';
-% model(i).name = 'lld6avb';
-% model(i).npar = 4;
-% model(i).parnames = {'\rho','\alpha','bias self','bias other'};
-% model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
-% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
 
 i=i+1;
-model(i).descr = 'RW model with double update with separate LR for +/- PEs, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
-model(i).name = 'kk_lld6sepavb';
-model(i).npar = 5;
-model(i).parnames = {'\rho','\alpha_pos','\alpha_neg','bias self','bias other'};
-model(i).parnames_untr = {'log \rho','siginv \alpha_pos','siginv \alpha_neg','b_s','b_o'};
-model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
-
-% 
-% i=i+1;
-% model(i).descr = 'RW model with quadruple update (for all 4 action-word combinations), restart for each avatar and two self/other bias parameters (shared across words). Words are part of state';
-% model(i).name = 'llq6avb';
-% model(i).npar = 4;
-% model(i).parnames = {'\rho','\alpha','bias self','bias other'};
-% model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
-% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
-% 
-% i=i+1;
-% model(i).descr = 'RW model, restart for each avatar and two self/other bias parameters (shared across words). No words in state';
-% model(i).name = 'll6avbnowords';
-% model(i).npar = 4;
-% model(i).parnames = {'\rho','\alpha','bias self','bias other'};
-% model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
-% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
-% 
-% i=i+1;
-% model(i).descr = 'RW model with double update (for opposite action), restart for each avatar and two self/other bias parameters (shared across words). No words in state';
-% model(i).name = 'lld6avbnowords';
-% model(i).npar = 4;
-% model(i).parnames = {'\rho','\alpha','bias self','bias other'};
-% model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
-% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
-% 
-% i=i+1;
-% model(i).descr = 'RW model, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
-% model(i).name = 'll6av4b';
-% model(i).npar = 6;
-% model(i).parnames = {'\rho','\alpha','bias self neg','bias other neg', 'bias self pos', 'bias other pos'};
-% model(i).parnames_untr = {'log \rho','siginv \alpha','b_{s,n}','b_{o,n}','b_{s,p}','b_{o,p}'};
-% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x','@(x)x','@(x)x'};
+model(i).descr = 'RW model, restart for each avatar and two self/other bias parameters (shared across words). Words are part of state';
+model(i).name = 'll6avb';
+model(i).npar = 4;
+model(i).parnames = {'\rho','\alpha','bias self','bias other'};
+model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
+model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
 
 i=i+1;
-model(i).descr = 'RW model with quadruple update with separate LR for +/- PEs, restart for each avatar and two bias parameters (self/other). Words are part of state';
-model(i).name = 'kk_llq6sepavb';
-model(i).npar = 5;
-model(i).parnames = {'\rho','\alpha_pos','\alpha_neg','bias self','bias other'};
-model(i).parnames_untr = {'log \rho','siginv \alpha_pos','siginv \alpha_neg','b_s','b_o'};
-model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
+model(i).descr = 'RW model with double update (for opposite action, same word), restart for each avatar and two self/other bias parameters (shared across words). Words are part of state';
+model(i).name = 'lld6avb';
+model(i).npar = 4;
+model(i).parnames = {'\rho','\alpha','bias self','bias other'};
+model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
+model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
+
+% i=i+1;
+% model(i).descr = 'RW model with double update with separate LR for +/- PEs, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
+% model(i).name = 'kk_lld6sepavb';
+% model(i).npar = 5;
+% model(i).parnames = {'\rho','\alpha_pos','\alpha_neg','bias self','bias other'};
+% model(i).parnames_untr = {'log \rho','siginv \alpha_pos','siginv \alpha_neg','b_s','b_o'};
+% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
+
+
+i=i+1;
+model(i).descr = 'RW model with quadruple update (for all 4 action-word combinations), restart for each avatar and two self/other bias parameters (shared across words). Words are part of state';
+model(i).name = 'llq6avb';
+model(i).npar = 4;
+model(i).parnames = {'\rho','\alpha','bias self','bias other'};
+model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
+model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
+
+i=i+1;
+model(i).descr = 'RW model, restart for each avatar and two self/other bias parameters (shared across words). No words in state';
+model(i).name = 'll6avbnowords';
+model(i).npar = 4;
+model(i).parnames = {'\rho','\alpha','bias self','bias other'};
+model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
+model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
+
+i=i+1;
+model(i).descr = 'RW model with double update (for opposite action), restart for each avatar and two self/other bias parameters (shared across words). No words in state';
+model(i).name = 'lld6avbnowords';
+model(i).npar = 4;
+model(i).parnames = {'\rho','\alpha','bias self','bias other'};
+model(i).parnames_untr = {'log \rho','siginv \alpha','b_s','b_o'};
+model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
+
+i=i+1;
+model(i).descr = 'RW model, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
+model(i).name = 'll6av4b';
+model(i).npar = 6;
+model(i).parnames = {'\rho','\alpha','bias self neg','bias other neg', 'bias self pos', 'bias other pos'};
+model(i).parnames_untr = {'log \rho','siginv \alpha','b_{s,n}','b_{o,n}','b_{s,p}','b_{o,p}'};
+model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x','@(x)x','@(x)x'};
+
+% i=i+1;
+% model(i).descr = 'RW model with quadruple update with separate LR for +/- PEs, restart for each avatar and two bias parameters (self/other). Words are part of state';
+% model(i).name = 'kk_llq6sepavb';
+% model(i).npar = 5;
+% model(i).parnames = {'\rho','\alpha_pos','\alpha_neg','bias self','bias other'};
+% model(i).parnames_untr = {'log \rho','siginv \alpha_pos','siginv \alpha_neg','b_s','b_o'};
+% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)1./(1+exp(-x))','@(x)x','@(x)x'};
 
 i=i+1;
 model(i).descr = 'RW model with quadruple update, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
@@ -109,13 +109,13 @@ model(i).parnames = {'\rho','\alpha','bias self neg','bias other neg', 'bias sel
 model(i).parnames_untr = {'log \rho','siginv \alpha','b_{s,n}','b_{o,n}','b_{s,p}','b_{o,p}'};
 model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)x','@(x)x','@(x)x','@(x)x'};
 
-i=i+1;
-model(i).descr = 'RW model with quadruple update with separate LR for +/- PEs, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
-model(i).name = 'kk_llq6sepav4b';
-model(i).npar = 7;
-model(i).parnames = {'\rho','\alpha_pos','\alpha_neg','bias self neg','bias other neg', 'bias self pos', 'bias other pos'};
-model(i).parnames_untr = {'log \rho','siginv \alpha_pos','siginv \alpha_neg','b_{s,n}','b_{o,n}','b_{s,p}','b_{o,p}'};
-model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)1./(1+exp(-x))','@(x)x','@(x)x','@(x)x','@(x)x'};
+% i=i+1;
+% model(i).descr = 'RW model with quadruple update with separate LR for +/- PEs, restart for each avatar and four bias parameters (self/other, pos/neg words). Words are part of state';
+% model(i).name = 'kk_llq6sepav4b';
+% model(i).npar = 7;
+% model(i).parnames = {'\rho','\alpha_pos','\alpha_neg','bias self neg','bias other neg', 'bias self pos', 'bias other pos'};
+% model(i).parnames_untr = {'log \rho','siginv \alpha_pos','siginv \alpha_neg','b_{s,n}','b_{o,n}','b_{s,p}','b_{o,p}'};
+% model(i).partransform = {'@(x)exp(x)','@(x)1./(1+exp(-x))','@(x)1./(1+exp(-x))','@(x)x','@(x)x','@(x)x','@(x)x'};
 
 nModls = i;
 fprintf('%i models in model list\n',nModls);

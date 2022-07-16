@@ -78,7 +78,7 @@ emfitpath = fileparts(which('batchRunEMfit'));
 addpath([emfitpath '/lib']);
 cleanpath(modelClass);									% clean all model paths
 addpath(genpath([emfitpath '/' modelClass{modelClassToFit}]));	% add chosen model path
-models=modelList; 										% get complete model list
+models=kk_modelList; 										% get complete model list
 if exist('modelsToFit')
 	models = models(modelsToFit); 					% select specific models to fit
 end
@@ -118,7 +118,7 @@ batchGenerateSurrogateData(Data,models,options);
 
 %------------------------------------------------------------------------------
 % plot surrogate data, compare with real data (specific to model)
-load([resultsDir '/SurrogateData']);
-surrogateDataPlots(Data,models,SurrogateData,bestmodel,resultsDir)
+% load([resultsDir '/SurrogateData']);
+% surrogateDataPlots(Data,models,SurrogateData,bestmodel,resultsDir)
 
 fprintf('\n\nAll done!\n\n')
