@@ -5,19 +5,19 @@ Nsj = length(Data);
 
 nfig=get(gcf,'Number');
 
-mkdir figs 
+mkdir figs
 
 %--------------------------------------------------------------------
-% compare surrogate with real data 
+% compare surrogate with real data
 %--------------------------------------------------------------------
 nfig=nfig+1; figure(nfig);clf;
 
 as = zeros(max([Data.Nch]),nModls,Nsj);
 for sj=1:Nsj
-	a(:,sj) = Data(sj).a; 
+	a(:,sj) = Data(sj).a;
 
 	for mdl=1:nModls;
-		foo = [SurrogateData(sj).(models(mdl).name).a]; 
+		foo = [SurrogateData(sj).(models(mdl).name).a];
 		%foo = reshape(foo,Data(sj).Nch,length(foo)/Data(sj).Nch);
 		as(:,mdl,sj) = mean(foo==1,2);
 	end
@@ -27,20 +27,20 @@ end
 m = sum(a==1,2)./sum(~isnan(a),2);
 s = nanstd(a==1,[],2)./sqrt(Nsj);
 
-navat = length(unique(Data(1).avatid));
+navat = length(unique(Data(1).avatarId));
 nrep = max([Data.Nch])/navat;
 
-avatval = Data(1).avatval'*kron(eye(navat),ones(nrep,1))/nrep; 
-avatval(avatval==-1)=0; avatval = avatval*2+1;
+avatarVal = Data(1).avatarVal'*kron(eye(navat),ones(nrep,1))/nrep;
+avatarVal(avatarVal==-1)=0; avatarVal = avatarVal*2+1;
 col = [1 .7 .7; .7 .7 .7; .7 1 .7];
 
-for k=1:length(avatval);
-	h=fill([.5 8.5 8.5 .5]+(k-1)*8,[0 0 1 1],col(avatval(k),:));
+for k=1:length(avatarVal);
+	% h=fill([.5 8.5 8.5 .5]+(k-1)*8,[0 0 1 1],col(avatarVal(k),:));
 	hon
 end
 hhh = plot(sum(~isnan([Data.a])/Nsj),'k');
 h(1) = plot(m,'k--','linewidth',2);
-plot(find(Data(1).wordval==1),m(Data(1).wordval==1),'k.','markersize',30);
+plot(find(Data(1).wordVal==1),m(Data(1).wordVal==1),'k.','markersize',30);
 errorbar(m,s,'k.','linewidth',1);
 axis tight
 
@@ -48,9 +48,9 @@ mas = sum(as,3)./sum(~isnan(as),3);
 hh = plot(mas,'linewidth',2);
 
 
-le = {models.name}; 
+le = {models.name};
 le = {'Data',le{:},'% responded'};
-f = legend([h;hh;hhh],le,'orientation','horizontal','location','southoutside'); 
+f = legend([h;hh;hhh],le,'orientation','horizontal','location','southoutside');
 if isfield(Data(1),'word');
    set(gca,'xtick',1:length(Data(1).word),'xticklabel',Data(1).word,'xticklabelrotation',90)
 end
@@ -65,11 +65,11 @@ nfig=nfig+1; figure(nfig);clf;
 		R.(models(mdl).name) = load(sprintf('%s/%s',fitResults,models(mdl).name));
 		parFitEM = R.(models(mdl).name).E;
 		yl = models(mdl).parnames_untr;
-		[c,p] = corr(parFitEM',[Data.spin]','type','spearman'); 
+		[c,p] = corr(parFitEM',[Data.spin]','type','spearman');
 		cc{mdl}=c;
 		pp{mdl}=p;
 		subplot(1,nModls,mdl);
-			h=bar(c); 
+			h=bar(c);
 			set(h,'facecolor',[.7 .7 .7]);
 			hon
 			c(p>.05)=NaN;                  h=bar(c); set(h,'facecolor',[0 1 0]);
@@ -81,7 +81,7 @@ nfig=nfig+1; figure(nfig);clf;
 			hof
 			set(gca,'xtick',1:models(mdl).npar,'xticklabel',yl);
 			title(models(mdl).name);
-			
+
 
 	end
 
