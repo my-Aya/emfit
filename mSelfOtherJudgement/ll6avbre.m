@@ -89,7 +89,7 @@ dqda = zeros(2,2,12);
 for t=97:192;
 	if ~isnan(a(t));
 
-		bl = 1+(t>48);
+		bl = 1+(t>144);
 		wv = (-wordVal(t)+3)/2;
 		q0 = Q(:,wv,av(t));
 		q0(1) = q0(1) + selfposbias_retest(bl)*wordVal(t);
