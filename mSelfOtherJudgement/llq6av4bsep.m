@@ -59,7 +59,7 @@ for t=1:length(a)
 		if dodiff
 			dl(1) = dl(1) + dqdr(a(t),wv,av(t)) - p'*dqdr(:,wv,av(t));
             dl(2) = dl(2) + dqdapos(a(t),wv,av(t)) - p'*dqdapos(:,wv,av(t));
-            dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t)); 
+            dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t));
             if pe_type
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_pos*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
@@ -69,7 +69,11 @@ for t=1:length(a)
 			    dqdapos(3-a(t),wv,av(t)) = dqdapos(3-a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(-rho*r(t)-Q(3-a(t),wv,av(t))) + alpha_pos*(-dqdapos(3-a(t),wv,av(t)));
 			    dqdapos(a(t),3-wv,av(t)) = dqdapos(a(t),3-wv,av(t)) + alpha_pos*(1-alpha_pos)*(-rho*r(t)-Q(a(t),3-wv,av(t))) + alpha_pos*(-dqdapos(a(t),3-wv,av(t)));
 			    dqdapos(3-a(t),3-wv,av(t)) = dqdapos(3-a(t),3-wv,av(t)) + alpha_pos*(1-alpha_pos)*(rho*r(t)-Q(3-a(t),3-wv,av(t))) + alpha_pos*(-dqdapos(3-a(t),3-wv,av(t)));
-            else
+                dqdaneg(a(t),wv,av(t)) = dqdaneg(a(t),wv,av(t)) + alpha_pos*(-dqdaneg(a(t),wv,av(t)));
+			    dqdaneg(3-a(t),wv,av(t)) = dqdaneg(3-a(t),wv,av(t)) + alpha_pos*(-dqdaneg(3-a(t),wv,av(t)));
+			    dqdaneg(a(t),3-wv,av(t)) = dqdaneg(a(t),3-wv,av(t)) + alpha_pos*(-dqdaneg(a(t),3-wv,av(t)));
+			    dqdaneg(3-a(t),3-wv,av(t)) = dqdaneg(3-a(t),3-wv,av(t)) + alpha_pos*(-dqdaneg(3-a(t),3-wv,av(t)));
+            else 
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_neg*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_neg*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
 			    dqdr(a(t),3-wv,av(t)) = dqdr(a(t),3-wv,av(t)) + alpha_neg*(-rho*r(t) - dqdr(a(t),3-wv,av(t)));
@@ -78,6 +82,10 @@ for t=1:length(a)
 			    dqdaneg(3-a(t),wv,av(t)) = dqdaneg(3-a(t),wv,av(t)) + alpha_neg*(1-alpha_neg)*(-rho*r(t)-Q(3-a(t),wv,av(t))) + alpha_neg*(-dqdaneg(3-a(t),wv,av(t)));
 			    dqdaneg(a(t),3-wv,av(t)) = dqdaneg(a(t),3-wv,av(t)) + alpha_neg*(1-alpha_neg)*(-rho*r(t)-Q(a(t),3-wv,av(t))) + alpha_neg*(-dqdaneg(a(t),3-wv,av(t)));
 			    dqdaneg(3-a(t),3-wv,av(t)) = dqdaneg(3-a(t),3-wv,av(t)) + alpha_neg*(1-alpha_neg)*(rho*r(t)-Q(3-a(t),3-wv,av(t))) + alpha_neg*(-dqdaneg(3-a(t),3-wv,av(t)));
+                dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_neg*(-dqdapos(a(t),wv,av(t)));
+			    dqdapos(3-a(t),wv,av(t)) = dqdapos(3-a(t),wv,av(t)) + alpha_neg*(-dqdapos(3-a(t),wv,av(t)));
+			    dqdapos(a(t),3-wv,av(t)) = dqdapos(a(t),3-wv,av(t)) + alpha_neg*(-dqdapos(a(t),3-wv,av(t)));
+			    dqdapos(3-a(t),3-wv,av(t)) = dqdapos(3-a(t),3-wv,av(t)) + alpha_neg*(-dqdapos(3-a(t),3-wv,av(t)));
             end
             tmp = [wordval(t);0];  
 			dl(4+bl+wordval(t))   = dl(4+bl+wordval(t)) + tmp(a(t)) - p'*tmp;

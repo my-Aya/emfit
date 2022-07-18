@@ -1,4 +1,4 @@
-function [l,dl,dsurr] = llq6avbsep(x,D,mu,nui,doprior,options)
+function [l,dl,dsurr] = llq6av4binitsep(x,D,mu,nui,doprior,options)
 % 
 % [l,dl,surrugatedata] = llb(x,D,mu,nui,doprior,options);
 % 
@@ -16,7 +16,8 @@ np = size(x,1);
 rho = exp(x(1));
 alpha_pos = 1./(1+exp(-x(2)));
 alpha_neg = 1./(1+exp(-x(3)));
-selfposbias = x(4:5);
+selfposbias = x(4:7);
+initb = 1./(1+exp(-x(8)));
 
 % add Gaussian prior with mean mu and variance nui^-1 if doprior = 1 
 [l,dl] = logGaussianPrior(x,mu,nui,doprior);
@@ -27,7 +28,7 @@ wordval = D.wordval;
 avatval = D.avatval;
 av = D.avatid;
 
-Q = zeros(2,2,12);
+Q = zeros(2,2,12)+initb;
 dqdr = zeros(2,2,12);
 dqdapos = zeros(2,2,12);
 dqdaneg = zeros(2,2,12);
@@ -43,7 +44,7 @@ for t=1:length(a)
         bl = 1+(t>48);
 		wv = (-wordval(t)+3)/2;
 		q0 = Q(:,wv,av(t));
-		q0(1) = q0(1) + selfposbias(bl)*wordval(t);
+		q0(1) = q0(1) + selfposbias(bl+wordval(t)+1)*wordval(t);
 
 		l0 = q0-max(q0);
 		l0 = l0 - log(sum(exp(l0)));
@@ -53,13 +54,13 @@ for t=1:length(a)
 			[a(t),r(t)] = generatera(p,wordval(t),avatval(t));
         end
         pe_type = (r(t) - Q(a(t),wv,av(t))) > 0;
-
+        
 		l = l+l0(a(t));
 
 		if dodiff
 			dl(1) = dl(1) + dqdr(a(t),wv,av(t)) - p'*dqdr(:,wv,av(t));
             dl(2) = dl(2) + dqdapos(a(t),wv,av(t)) - p'*dqdapos(:,wv,av(t));
-            dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t));
+            dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t)); 
             if pe_type
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_pos*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
@@ -69,11 +70,7 @@ for t=1:length(a)
 			    dqdapos(3-a(t),wv,av(t)) = dqdapos(3-a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(-rho*r(t)-Q(3-a(t),wv,av(t))) + alpha_pos*(-dqdapos(3-a(t),wv,av(t)));
 			    dqdapos(a(t),3-wv,av(t)) = dqdapos(a(t),3-wv,av(t)) + alpha_pos*(1-alpha_pos)*(-rho*r(t)-Q(a(t),3-wv,av(t))) + alpha_pos*(-dqdapos(a(t),3-wv,av(t)));
 			    dqdapos(3-a(t),3-wv,av(t)) = dqdapos(3-a(t),3-wv,av(t)) + alpha_pos*(1-alpha_pos)*(rho*r(t)-Q(3-a(t),3-wv,av(t))) + alpha_pos*(-dqdapos(3-a(t),3-wv,av(t)));
-                dqdaneg(a(t),wv,av(t)) = dqdaneg(a(t),wv,av(t)) + alpha_pos*(-dqdaneg(a(t),wv,av(t)));
-			    dqdaneg(3-a(t),wv,av(t)) = dqdaneg(3-a(t),wv,av(t)) + alpha_pos*(-dqdaneg(3-a(t),wv,av(t)));
-			    dqdaneg(a(t),3-wv,av(t)) = dqdaneg(a(t),3-wv,av(t)) + alpha_pos*(-dqdaneg(a(t),3-wv,av(t)));
-			    dqdaneg(3-a(t),3-wv,av(t)) = dqdaneg(3-a(t),3-wv,av(t)) + alpha_pos*(-dqdaneg(3-a(t),3-wv,av(t)));
-            else 
+            else
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_neg*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_neg*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
 			    dqdr(a(t),3-wv,av(t)) = dqdr(a(t),3-wv,av(t)) + alpha_neg*(-rho*r(t) - dqdr(a(t),3-wv,av(t)));
@@ -82,13 +79,9 @@ for t=1:length(a)
 			    dqdaneg(3-a(t),wv,av(t)) = dqdaneg(3-a(t),wv,av(t)) + alpha_neg*(1-alpha_neg)*(-rho*r(t)-Q(3-a(t),wv,av(t))) + alpha_neg*(-dqdaneg(3-a(t),wv,av(t)));
 			    dqdaneg(a(t),3-wv,av(t)) = dqdaneg(a(t),3-wv,av(t)) + alpha_neg*(1-alpha_neg)*(-rho*r(t)-Q(a(t),3-wv,av(t))) + alpha_neg*(-dqdaneg(a(t),3-wv,av(t)));
 			    dqdaneg(3-a(t),3-wv,av(t)) = dqdaneg(3-a(t),3-wv,av(t)) + alpha_neg*(1-alpha_neg)*(rho*r(t)-Q(3-a(t),3-wv,av(t))) + alpha_neg*(-dqdaneg(3-a(t),3-wv,av(t)));
-                dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_neg*(-dqdapos(a(t),wv,av(t)));
-			    dqdapos(3-a(t),wv,av(t)) = dqdapos(3-a(t),wv,av(t)) + alpha_neg*(-dqdapos(3-a(t),wv,av(t)));
-			    dqdapos(a(t),3-wv,av(t)) = dqdapos(a(t),3-wv,av(t)) + alpha_neg*(-dqdapos(a(t),3-wv,av(t)));
-			    dqdapos(3-a(t),3-wv,av(t)) = dqdapos(3-a(t),3-wv,av(t)) + alpha_neg*(-dqdapos(3-a(t),3-wv,av(t)));
             end
             tmp = [wordval(t);0];  
-			dl(3+bl)   = dl(3+bl) + tmp(a(t)) - p'*tmp;
+			dl(4+bl+wordval(t))   = dl(4+bl+wordval(t)) + tmp(a(t)) - p'*tmp;
 			
 		end
         

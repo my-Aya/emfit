@@ -65,9 +65,11 @@ for t=1:length(a)
             if pe_type
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_pos*(-dqdapos(a(t),wv,av(t)));
+                dqdaneg(a(t),wv,av(t)) = dqdaneg(a(t),wv,av(t)) + alpha_pos*(-dqdaneg(a(t),wv,av(t)));
             else
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_neg*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdaneg(a(t),wv,av(t)) = dqdaneg(a(t),wv,av(t)) + alpha_neg*(1-alpha_neg)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_neg*(-dqdaneg(a(t),wv,av(t)));
+                dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_neg*(-dqdapos(a(t),wv,av(t)));
             end
             
 			

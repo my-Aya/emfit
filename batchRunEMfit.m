@@ -36,7 +36,7 @@ function batchRunEMfit(modelClassToFit,Data,resultsDir,varargin)
 % MAXIT (optional) limits the maximal number of EM iterations.
 %
 % Quentin Huys, 2018 qhuys@cantab.net
-%
+% Modified by Kaustubh Kulkarni, 2022
 %==============================================================================
 
 if exist('resultsDir')~=1 || isempty(resultsDir)
@@ -46,7 +46,7 @@ warning('off','MATLAB:MKDIR:DirectoryExists');
 mkdir(resultsDir);
 
 % check optional arguments
-validvarargins = {'modelsToFit','checkgradients','maxit','bsub'};
+validvarargins = {'modelsToFit','checkgradients','maxit','bsub','modelListArg'};
 if exist('varargin')
 	for k=1:length(validvarargins)
 		i = find(cellfun(@(x)strcmpi(x,validvarargins{k}),varargin),1);
@@ -78,11 +78,13 @@ emfitpath = fileparts(which('batchRunEMfit'));
 addpath([emfitpath '/lib']);
 cleanpath(modelClass);									% clean all model paths
 addpath(genpath([emfitpath '/' modelClass{modelClassToFit}]));	% add chosen model path
-models=kk_modelList; 										% get complete model list
-if exist('modelsToFit')
-	models = models(modelsToFit); 					% select specific models to fit
+% models=kk_modelList; 										% get complete model list
+% if exist('modelsToFit')
+% 	models = models(modelsToFit); 					% select specific models to fit
+% end
+if exist('modelListArg', 'var')
+	models = modelListArg; 					% select specific models to fit
 end
-
 %------------------------------------------------------------------------------
 % generate surrogate data if no data was provided
 if ~exist('Data', 'var') || isempty(Data)
@@ -105,11 +107,11 @@ close all;
 
 %------------------------------------------------------------------------------
 % perform model comparison
-bestmodel = batchModelComparison(Data,models,resultsDir);
+% bestmodel = batchModelComparison(Data,models,resultsDir);
 
 %------------------------------------------------------------------------------
 % plot parameters of best model
-batchParameterPlots(Data,models,resultsDir,bestmodel);
+% batchParameterPlots(Data,models,resultsDir,bestmodel);
 
 %------------------------------------------------------------------------------
 % generate surrogate data
