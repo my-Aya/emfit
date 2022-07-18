@@ -64,7 +64,7 @@ modelClass{4} = 'mTwostep';                     % Daw et al., 2011
 modelClass{5} = 'mEffortCollins';               % Gold et al., 2013
 modelClass{6} = 'mPruning';                     % Lally et al., 2017
 modelClass{7} = 'mEffortDDM';                   % Berwian et al., 2020
-modelClass{8} = 'mSelfOtherJudgement';          % Alena 2022 
+modelClass{8} = 'mSelfOtherJudgement';          % Alena 2022
 
 modelClassToFit = find(cellfun(@(x)strcmp(x,modelClassToFit),modelClass));
 if isempty(modelClassToFit); error('Model class not found');end
@@ -78,7 +78,7 @@ emfitpath = fileparts(which('batchRunEMfit'));
 addpath([emfitpath '/lib']);
 cleanpath(modelClass);									% clean all model paths
 addpath(genpath([emfitpath '/' modelClass{modelClassToFit}]));	% add chosen model path
-models=modelList; 										% get complete model list
+models=modelList_retest; 										% get complete model list
 if exist('modelsToFit')
 	models = models(modelsToFit); 					% select specific models to fit
 end
