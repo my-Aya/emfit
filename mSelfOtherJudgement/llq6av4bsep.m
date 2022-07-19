@@ -89,7 +89,6 @@ for t=1:length(a)
             end
             tmp = [wordval(t);0];  
 			dl(4+bl+wordval(t))   = dl(4+bl+wordval(t)) + tmp(a(t)) - p'*tmp;
-			
 		end
         
         if pe_type

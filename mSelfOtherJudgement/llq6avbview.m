@@ -1,4 +1,4 @@
-function [l,dl,dsurr] = llq6avbsep(x,D,mu,nui,doprior,options)
+function [l,dl,dsurr] = llq6avbview(x,D,mu,nui,doprior,options)
 % 
 % [l,dl,surrugatedata] = llb(x,D,mu,nui,doprior,options);
 % 
@@ -43,7 +43,7 @@ for t=1:length(a)
         bl = 1+(t>48);
 		wv = (-wordval(t)+3)/2;
 		q0 = Q(:,wv,av(t));
-		q0(1) = q0(1) + selfposbias(bl)*wordval(t) + wordval(t);
+		q0(1) = q0(1) + selfposbias(bl)*wordval(t);
 
 		l0 = q0-max(q0);
 		l0 = l0 - log(sum(exp(l0)));
@@ -52,7 +52,7 @@ for t=1:length(a)
         if options.generatesurrogatedata==1
 			[a(t),r(t)] = generatera(p,wordval(t),avatval(t));
         end
-        pe_type = (r(t) - Q(a(t),wv,av(t))) > 0;
+        view_type = (Q(a(t),wv,av(t))+Q(3-a(t),3-wv,av(t))-Q(3-a(t),wv,av(t))-Q(a(t),3-wv,av(t)))/4 >= 0;
 
 		l = l+l0(a(t));
 
@@ -60,7 +60,7 @@ for t=1:length(a)
 			dl(1) = dl(1) + dqdr(a(t),wv,av(t)) - p'*dqdr(:,wv,av(t));
             dl(2) = dl(2) + dqdapos(a(t),wv,av(t)) - p'*dqdapos(:,wv,av(t));
             dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t));
-            if pe_type
+            if view_type
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdr(3-a(t),wv,av(t)) = dqdr(3-a(t),wv,av(t)) + alpha_pos*(-rho*r(t) - dqdr(3-a(t),wv,av(t)));
 			    dqdr(a(t),3-wv,av(t)) = dqdr(a(t),3-wv,av(t)) + alpha_pos*(-rho*r(t) - dqdr(a(t),3-wv,av(t)));
@@ -89,9 +89,10 @@ for t=1:length(a)
             end
             tmp = [wordval(t);0];  
 			dl(3+bl)   = dl(3+bl) + tmp(a(t)) - p'*tmp;
+			
 		end
         
-        if pe_type
+        if view_type
 		    Q(  a(t),wv,av(t)) = Q(  a(t),wv,av(t))+alpha_pos*( rho*r(t)-Q(  a(t),wv,av(t)));
             Q(3-a(t),wv,av(t)) = Q(3-a(t),wv,av(t))+alpha_pos*(-rho*r(t)-Q(3-a(t),wv,av(t)));
 	        Q(  a(t),3-wv,av(t)) = Q(  a(t),3-wv,av(t))+alpha_pos*(-rho*r(t)-Q(  a(t),3-wv,av(t)));

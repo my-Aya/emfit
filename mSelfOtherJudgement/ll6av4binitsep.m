@@ -17,6 +17,7 @@ rho = exp(x(1));
 alpha_pos = 1./(1+exp(-x(2)));
 alpha_neg = 1./(1+exp(-x(3)));
 selfposbias = x(4:7);
+initb = x(8);
 
 % add Gaussian prior with mean mu and variance nui^-1 if doprior = 1 
 [l,dl] = logGaussianPrior(x,mu,nui,doprior);
@@ -43,7 +44,8 @@ for t=1:length(a)
         bl = 1+(t>48);
 		wv = (-wordval(t)+3)/2;
 		q0 = Q(:,wv,av(t));
-		q0(1) = q0(1) + selfposbias(bl+wordval(t)+1)*wordval(t);
+		q0(1) = q0(1) + selfposbias(bl+wordval(t)+1)*wordval(t)+wordval(t)*initb;
+        q0(2) = q0(2) - wordval(t)*initb;
 
 		l0 = q0-max(q0);
 		l0 = l0 - log(sum(exp(l0)));
@@ -62,7 +64,8 @@ for t=1:length(a)
             dl(3) = dl(3) + dqdaneg(a(t),wv,av(t)) - p'*dqdaneg(:,wv,av(t));
             tmp = [wordval(t);0];  
 			dl(4+bl+wordval(t))   = dl(4+bl+wordval(t)) + tmp(a(t)) - p'*tmp;
-
+            tmp = [wordval(t);-wordval(t)];
+            dl(8) = dl(8) + tmp(a(t)) - p'*tmp;
             if pe_type
                 dqdr(a(t),wv,av(t)) = dqdr(a(t),wv,av(t)) + alpha_pos*(rho*r(t) - dqdr(a(t),wv,av(t)));
 			    dqdapos(a(t),wv,av(t)) = dqdapos(a(t),wv,av(t)) + alpha_pos*(1-alpha_pos)*(rho*r(t)-Q(a(t),wv,av(t))) + alpha_pos*(-dqdapos(a(t),wv,av(t)));
