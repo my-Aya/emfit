@@ -5,14 +5,15 @@ Nsj = length(Data);
 
 nfig=get(gcf,'Number');
 
-mkdir figs
+% mkdir figs
 
 %--------------------------------------------------------------------
 % compare surrogate with real data
 %--------------------------------------------------------------------
 nfig=nfig+1; figure(nfig);clf;
 
-as = zeros(max([Data.Nch]),nModls,Nsj);
+% sometimes no one has no NaN, and then max([Data.Nch]) won't give the right value -- we need length(Data(1).a)
+as = zeros(length(Data(1).a),nModls,Nsj);
 for sj=1:Nsj
 	a(:,sj) = Data(sj).a;
 
@@ -28,7 +29,7 @@ m = sum(a==1,2)./sum(~isnan(a),2);
 s = nanstd(a==1,[],2)./sqrt(Nsj);
 
 navat = length(unique(Data(1).avatarId));
-nrep = max([Data.Nch])/navat;
+	nrep = length(Data(1).a)/navat; % same thing as before
 
 avatarVal = Data(1).avatarVal'*kron(eye(navat),ones(nrep,1))/nrep;
 avatarVal(avatarVal==-1)=0; avatarVal = avatarVal*2+1;
@@ -88,5 +89,3 @@ nfig=nfig+1; figure(nfig);clf;
 	myfig(gcf,sprintf('%s/figs/SPINParameterCorrelations',fitResults));
 
 end
-
-
