@@ -15,6 +15,7 @@ r = D.r;
 a = D.a; 
 likSel = D.likSelf;
 likOth = D.likOther;
+likOthMSelf = D.likOtherMSelf;
 likO4S = D.likOther4Self;
 
 Tr = length(r);
@@ -53,7 +54,7 @@ for t=1:T
 		end
 
 		if ~isnan(likSel(t))
-			l = l - (likSel(t) - yh)^2 ; 
+			l = l - (likOthMSelf(t) - yh)^2 ; 
 		end
 		l = l + lpa(a(1,t));
 
