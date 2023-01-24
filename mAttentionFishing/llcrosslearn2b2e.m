@@ -4,8 +4,8 @@ dodiff=nargout==2;
 np = length(x);
 
 % transforming parameters
-beta = exp(x(1));
-eps = 1./(1+exp(-x(2:3)));
+beta = exp(x(1:2));
+eps = 1./(1+exp(-x(3:4)));
 
 [l,dl] = logGaussianPrior(x,mu,nui,doprior);
 
@@ -15,13 +15,18 @@ r = D.r;
 V = zeros(2,1);
 V1 = zeros(2,1);
 V2 = zeros(2,1);
-dVdb = zeros(2,1); 
+dVdb1 = zeros(2,1); 
+dVdb2 = zeros(2,1); 
 dVde1 = zeros(2,1); 
 dVde2 = zeros(2,1); 
 dV1de1 = zeros(2,1); 
 dV2de1 = zeros(2,1); 
 dV1de2 = zeros(2,1); 
 dV2de2 = zeros(2,1); 
+dV1db1 = zeros(2,1); 
+dV2db1 = zeros(2,1); 
+dV1db2 = zeros(2,1); 
+dV2db2 = zeros(2,1); 
 
 T = length(a);
 if options.generatesurrogatedata==1
@@ -45,14 +50,20 @@ for t=1:T
 
 		if dodiff
 
-			dl(1) = dl(1) + dVdb(a(1,t)) - pa'*dVdb; 
-			dl(2) = dl(2) + dVde1(a(1,t)) - pa'*dVde1;
-			dl(3) = dl(3) + dVde2(a(1,t)) - pa'*dVde2;
+			dl(1) = dl(1) + dVdb1(a(1,t)) - pa'*dVdb1; 
+			dl(2) = dl(2) + dVdb2(a(1,t)) - pa'*dVdb2; 
+			dl(3) = dl(3) + dVde1(a(1,t)) - pa'*dVde1;
+			dl(4) = dl(4) + dVde2(a(1,t)) - pa'*dVde2;
 
-			dVdb(a(1,t)) = dVdb(a(1,t)) + eps(1)*(beta*r(1,t) - dVdb(a(1,t)));
-			dVdb(a(2,t)) = dVdb(a(2,t)) + eps(2)*(beta*r(2,t) - dVdb(a(2,t)));
+			dV1db1(  a(1,t)) = dVdb1(  a(1,t)) + eps(1)*(beta(1)*r(1,t) - dVdb1(a(1,t)));
+			dV1db1(3-a(1,t)) = dVdb1(3-a(1,t)); 
 
-			dV1de1(  a(1,t)) = dVde1(  a(1,t)) + eps(1)*(1-eps(1))*(beta*r(1,t) - V(a(1,t))) + eps(1)*( - dVde1(a(1,t)));
+			dV2db1(  a(2,t)) = dV1db1(  a(2,t)) - eps(2)*dV1db1(  a(2,t));
+			dV2db1(3-a(2,t)) = dV1db1(3-a(2,t)); 
+
+			dVdb1 = dV2db1; 
+
+			dV1de1(  a(1,t)) = dVde1(  a(1,t)) + eps(1)*(1-eps(1))*(beta(1)*r(1,t) - V(a(1,t))) + eps(1)*( - dVde1(a(1,t)));
 			dV1de1(3-a(1,t)) = dVde1(3-a(1,t));
 
 			dV2de1(  a(2,t)) = dV1de1(  a(2,t)) + eps(2)*( - dV1de1(a(2,t)));
@@ -62,15 +73,23 @@ for t=1:T
 		end
 
 		% learn self then other
-		V1(  a(1,t)) = V(  a(1,t)) + eps(1)*(beta*r(1,t) - V(a(1,t)));
+		V1(  a(1,t)) = V(  a(1,t)) + eps(1)*(beta(1)*r(1,t) - V(a(1,t)));
 		V1(3-a(1,t)) = V(3-a(1,t));
 
 		if dodiff
 
+			dV1db2(  a(1,t)) = dVdb2(  a(1,t)) + eps(1)*( - dVdb2(a(1,t)));
+			dV1db2(3-a(1,t)) = dVdb2(3-a(1,t)) ; 
+
+			dV2db2(  a(2,t)) = dV1db2(  a(2,t)) + eps(2)*(beta(2)*r(2,t) - dV1db2(a(2,t)));
+			dV2db2(3-a(2,t)) = dV1db2(3-a(2,t)) ; 
+
+			dVdb2 = dV2db2; 
+
 			dV1de2(  a(1,t)) = dVde2(  a(1,t)) + eps(1)*( - dVde2(a(1,t)));
 			dV1de2(3-a(1,t)) = dVde2(3-a(1,t));
 
-			dV2de2(  a(2,t)) = dV1de2(  a(2,t)) + eps(2)*(1-eps(2))*(beta*r(2,t) - V1(a(2,t))) + eps(2)*( - dV1de2(a(2,t)));
+			dV2de2(  a(2,t)) = dV1de2(  a(2,t)) + eps(2)*(1-eps(2))*(beta(2)*r(2,t) - V1(a(2,t))) + eps(2)*( - dV1de2(a(2,t)));
 			dV2de2(3-a(2,t)) = dV1de2(3-a(2,t));
 
 			dVde2 = dV2de2; 
@@ -78,7 +97,7 @@ for t=1:T
 		end
 
 		% learn self then other
-		V2(  a(2,t)) = V1(  a(2,t)) + eps(2)*(beta*r(2,t) - V1(a(2,t)));
+		V2(  a(2,t)) = V1(  a(2,t)) + eps(2)*(beta(2)*r(2,t) - V1(a(2,t)));
 		V2(3-a(2,t)) = V1(3-a(2,t));
 
 		V = V2; 

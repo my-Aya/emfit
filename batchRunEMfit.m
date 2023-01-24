@@ -16,6 +16,7 @@ function batchRunEMfit(modelClassToFit,Data,resultsDir,varargin)
 % 'mEffortCollins';	 				% Gold et al., 2013 
 % 'mPruning'; 						   % Lally et al., 2017 
 % 'mEffortDDM';                  % Berwian et al., 2020
+% 'mAttentionFishing';           % Alena 2022 
 %
 % DATA (optional) contains the data.  See the dataformat.txt files in the model
 % folders for instructions on how the data contained in DATA should be formatted
@@ -64,6 +65,7 @@ modelClass{4} = 'mTwostep';                     % Daw et al., 2011
 modelClass{5} = 'mEffortCollins';               % Gold et al., 2013 
 modelClass{6} = 'mPruning';                     % Lally et al., 2017 
 modelClass{7} = 'mEffortDDM';                   % Berwian et al., 2020 
+modelClass{8} = 'mAttentionFishing';            % Alena 2022
 
 modelClassToFit = find(cellfun(@(x)strcmp(x,modelClassToFit),modelClass)); 
 if isempty(modelClassToFit); error('Model class not found');end
